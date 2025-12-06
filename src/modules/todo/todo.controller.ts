@@ -1,15 +1,13 @@
 import { Request, Response } from "express";
+import { todoServices } from "./todo.service";
 
-import { userServices } from "./user.service";
-
-const createUser = async (req: Request, res: Response) => {
-  const { name, email } = req.body;
+const createTodo = async (req: Request, res: Response) => {
   try {
-    const result = await userServices.createUser(name, email);
+    const result = await todoServices.createTodo(req.body);
     // console.log(result.rows[0]);
     res.status(201).json({
       success: true,
-      message: "Data Inserted Successfully.",
+      message: "Todo Created Successfully.",
       data: result.rows[0],
     });
   } catch (error: any) {
@@ -19,12 +17,12 @@ const createUser = async (req: Request, res: Response) => {
     });
   }
 };
-const getUser = async (req: Request, res: Response) => {
+const getTodo = async (req: Request, res: Response) => {
   try {
-    const result = await userServices.getUser();
+    const result = await todoServices.getTodo();
     res.status(200).json({
       success: true,
-      message: "Users retrieved successfully.",
+      message: "Todos retrieved successfully.",
       data: result.rows,
     });
   } catch (error: any) {
@@ -35,20 +33,20 @@ const getUser = async (req: Request, res: Response) => {
     });
   }
 };
-const getSingleUser = async (req: Request, res: Response) => {
+const getSingleTodo = async (req: Request, res: Response) => {
   try {
-    const result = await userServices.getSingleUser(req.params.id as string);
-    // console.log(result);
+    const result = await todoServices.getSingleTodo(req.params.id as string);
+    console.log(result);
 
     if (result.rows.length === 0) {
       res.status(404).json({
         success: false,
-        message: "User not found.",
+        message: "Todo not found.",
       });
     } else {
       res.status(200).json({
         success: true,
-        message: "User fetched successfully..",
+        message: "Single todo fetched successfully..",
         data: result.rows[0],
       });
     }
@@ -61,22 +59,20 @@ const getSingleUser = async (req: Request, res: Response) => {
   }
 };
 
-const updateUser = async (req: Request, res: Response) => {
-  console.log(req.params.id);
-  const { name, email } = req.body;
+const updateTodo = async (req: Request, res: Response) => {
   try {
-    const result = await userServices.updateUser(name, email, req.params.id!);
+    const result = await todoServices.updateTodo(req.body, req.params.id!);
     // console.log(result);
 
     if (result.rows.length === 0) {
       res.status(404).json({
         success: false,
-        message: "User not found.",
+        message: "Todo not found.",
       });
     } else {
       res.status(200).json({
         success: true,
-        message: "User Updated Successfully..",
+        message: "Todo Updated Successfully..",
         data: result.rows[0],
       });
     }
@@ -88,19 +84,20 @@ const updateUser = async (req: Request, res: Response) => {
     });
   }
 };
-const deleteUser = async (req: Request, res: Response) => {
+
+const deleteTodo = async (req: Request, res: Response) => {
   try {
-    const result = await userServices.deleteUser(req.params.id!);
+    const result = await todoServices.deleteTodo(req.params.id!);
 
     if (result.rowCount === 0) {
       res.status(404).json({
         success: false,
-        message: "User not found.",
+        message: "Todo not found.",
       });
     } else {
       res.status(200).json({
         success: true,
-        message: "User Deleted Successfully..",
+        message: "Todo Deleted Successfully..",
         data: result.rows,
       });
     }
@@ -113,10 +110,10 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
-export const userControllers = {
-  createUser,
-  getUser,
-  getSingleUser,
-  updateUser,
-  deleteUser,
+export const todoControllers = {
+  createTodo,
+  getTodo,
+  getSingleTodo,
+  updateTodo,
+  deleteTodo,
 };
